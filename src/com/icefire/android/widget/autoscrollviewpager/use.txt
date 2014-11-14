@@ -1,0 +1,90 @@
+﻿轮播效果的ViewPager
+
+使用:
+layout_auto_viewpager.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+<cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager
+    android:id="@+id/view_pager"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+</LinearLayout>
+
+
+AutoViewPagerActivity.java
+
+package com.example.viewpage;
+import java.util.ArrayList;
+import java.util.List;
+import com.example.viewpage.adapter.ImagePagerAdapter;
+import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager;
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.Window;
+import android.widget.TextView;
+
+public class AutoViewPagerActivity extends Activity {
+
+	private AutoScrollViewPager viewPager;
+	private TextView indexText;
+	private List<Integer> imageIdList;
+	private Context mContext;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.layout_auto_viewpager);
+		mContext=this;
+		viewPager = (AutoScrollViewPager) findViewById(R.id.view_pager);
+		imageIdList = new ArrayList<Integer>();
+		imageIdList.add(R.drawable.image01);
+		imageIdList.add(R.drawable.image02);
+		imageIdList.add(R.drawable.image03);
+		imageIdList.add(R.drawable.image04);
+		imageIdList.add(R.drawable.image05);
+		viewPager.setAdapter(new ImagePagerAdapter(mContext, imageIdList));
+		viewPager.setOnPageChangeListener(new MyOnPageChangeListener());
+		viewPager.setInterval(5000);
+		viewPager.setCycle(true);
+		viewPager.startAutoScroll();
+	}
+
+	public class MyOnPageChangeListener implements OnPageChangeListener {
+		@Override
+		public void onPageSelected(int position) {
+//			indexText.setText(new StringBuilder().append(position + 1)
+//					.append("/").append(imageIdList.size()));
+		}
+
+		@Override
+		public void onPageScrolled(int position, float positionOffset,
+				int positionOffsetPixels) {
+		}
+
+		@Override
+		public void onPageScrollStateChanged(int arg0) {
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// stop auto scroll when onPause
+		viewPager.stopAutoScroll();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// start auto scroll when onResume
+		viewPager.startAutoScroll();
+	}
+}
