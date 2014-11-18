@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.provider.Settings.Secure;
 import android.text.TextUtils;
 
 /**
@@ -91,4 +92,18 @@ public class AppUtils {
         }
         return pkgInfo.packageName;
     }	
+    
+    /**
+     * 获取android设备的唯一标识
+     * @return
+     */
+    public static String getDeviceId(Context cxt){
+    	String device_id="";
+    	try {
+			device_id=Secure.getString(cxt.getContentResolver(), Secure.ANDROID_ID);
+		} catch (Exception e) {
+			 e.printStackTrace();
+		}
+    	return device_id;
+    }
 }
