@@ -1,9 +1,14 @@
 package com.icefire.android.utils;
 
+import java.util.List;
+
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.provider.Settings.Secure;
 import android.text.TextUtils;
 
 /**
@@ -91,4 +96,35 @@ public class AppUtils {
         }
         return pkgInfo.packageName;
     }	
+    
+    /**
+     * 获取android设备的唯一标识
+     * @return
+     */
+    public static String getDeviceId(Context cxt){
+    	String device_id="";
+    	try {
+			device_id=Secure.getString(cxt.getContentResolver(), Secure.ANDROID_ID);
+		} catch (Exception e) {
+			 e.printStackTrace();
+		}
+    	return device_id;
+    }
+    /**
+     * 判断service是否正在运行
+     * @param cxt
+     * @param serviePackageName 不能为null,如com.baidu.push.example.ReceiveNoticeService
+     * @return
+     */
+    @SuppressWarnings("static-access")
+	public static Boolean isThisServiceRunning(Context cxt,String serviePackageName){
+    	  ActivityManager am = (ActivityManager)cxt.getSystemService(cxt.ACTIVITY_SERVICE);
+ 	     List<RunningServiceInfo> list = am.getRunningServices(30);
+ 	     for(RunningServiceInfo info : list){
+ 	    	 if(serviePackageName.equals(info.service.getClassName())){
+ 	    		 return true;
+ 	    	 }
+ 	    }
+ 	    return false;
+    }
 }
