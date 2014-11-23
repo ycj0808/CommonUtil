@@ -1,5 +1,8 @@
 package com.icefire.android.utils;
 
+import java.util.List;
+
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -105,5 +108,28 @@ public class AppUtils {
 			 e.printStackTrace();
 		}
     	return device_id;
+    }
+    /**
+     * 判断应用是否在后台运行
+     * @author yangchj
+     * @date 2014-11-23 上午10:52:50
+     * @param context
+     * @return
+     */
+    public static boolean isBackground(Context context){
+    	 ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+    	 List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+    	 for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+    		 if (appProcess.processName.equals(context.getPackageName())){
+    			 if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND){
+    				 LogUtil.e("后台:" + appProcess.processName);
+    				 return true;
+    			 }else{
+    				 LogUtil.e("前台:" + appProcess.processName);
+    				 return false;
+    			 }
+    		 }
+    	 }
+    	 return false;
     }
 }
