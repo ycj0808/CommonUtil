@@ -117,7 +117,7 @@ public class AppUtils {
      * @return
      */
     @SuppressWarnings("static-access")
-	public static Boolean isThisServiceRunning(Context cxt,String serviePackageName){
+	public static boolean isThisServiceRunning(Context cxt,String serviePackageName){
     	  ActivityManager am = (ActivityManager)cxt.getSystemService(cxt.ACTIVITY_SERVICE);
  	     List<RunningServiceInfo> list = am.getRunningServices(30);
  	     for(RunningServiceInfo info : list){
@@ -126,5 +126,26 @@ public class AppUtils {
  	    	 }
  	    }
  	    return false;
+    }
+    /**
+     * 判断应用是否在后台运行
+     * @param context
+     * @return
+     */
+    public static boolean isBackground(Context context){
+    	  ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+    	  List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+    	  for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+    		  if (appProcess.processName.equals(context.getPackageName())){
+    			  if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND){
+    				  LogUtil.i("后台:" + appProcess.processName);
+    				  return true;
+    			  }else{
+    				  LogUtil.i("前台:" + appProcess.processName);
+    				  return false;
+    			  }
+    		  }
+    	  }
+    	  return false;
     }
 }
