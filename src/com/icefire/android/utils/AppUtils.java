@@ -3,6 +3,7 @@ package com.icefire.android.utils;
 import java.util.List;
 
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -110,26 +111,41 @@ public class AppUtils {
     	return device_id;
     }
     /**
+     * 判断service是否正在运行
+     * @param cxt
+     * @param serviePackageName 不能为null,如com.baidu.push.example.ReceiveNoticeService
+     * @return
+     */
+    @SuppressWarnings("static-access")
+	public static boolean isThisServiceRunning(Context cxt,String serviePackageName){
+    	  ActivityManager am = (ActivityManager)cxt.getSystemService(cxt.ACTIVITY_SERVICE);
+ 	     List<RunningServiceInfo> list = am.getRunningServices(30);
+ 	     for(RunningServiceInfo info : list){
+ 	    	 if(serviePackageName.equals(info.service.getClassName())){
+ 	    		 return true;
+ 	    	 }
+ 	    }
+ 	    return false;
+    }
+    /**
      * 判断应用是否在后台运行
-     * @author yangchj
-     * @date 2014-11-23 上午10:52:50
      * @param context
      * @return
      */
     public static boolean isBackground(Context context){
-    	 ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-    	 List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
-    	 for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
-    		 if (appProcess.processName.equals(context.getPackageName())){
-    			 if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND){
-    				 LogUtil.e("后台:" + appProcess.processName);
-    				 return true;
-    			 }else{
-    				 LogUtil.e("前台:" + appProcess.processName);
-    				 return false;
-    			 }
-    		 }
-    	 }
-    	 return false;
+    	  ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+    	  List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+    	  for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+    		  if (appProcess.processName.equals(context.getPackageName())){
+    			  if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND){
+    				  LogUtil.i("后台:" + appProcess.processName);
+    				  return true;
+    			  }else{
+    				  LogUtil.i("前台:" + appProcess.processName);
+    				  return false;
+    			  }
+    		  }
+    	  }
+    	  return false;
     }
 }
